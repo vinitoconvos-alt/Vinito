@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinito Con Vos - Sommelier Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #5c142c;
+            --accent: #d4af37;
+            --bg: #faf9f6;
+            --text: #2d2d2d;
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #eee;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #vinito-widget {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 25px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quiz-step {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #fdf2f5;
+            border-color: var(--primary);
+        }
+
+        .result-card {
+            border: 1px solid #eee;
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .badge-stock {
+            background: #e6f7ef;
+            color: #27ae60;
+        }
+
+        .badge-cupo {
+            background: #fff4e5;
+            color: #d35400;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: 0.4s;
+        }
+
+        .btn-buy {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Progress Indicator */
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+
+        .dot.active {
+            background: var(--primary);
+            width: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="vinito-widget">
+        <div class="header">
+            <h1>Sommelier Digital</h1>
+            <p>Vinito Con Vos</p>
+        </div>
+
+        <div id="quiz-area" class="content">
+            <!-- Contenido dinámico -->
+        </div>
+
+        <div class="dots" id="dots-container">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- CATALOGO (Fácil de editar para el usuario) ---
+        const CATALOGO = [
+            {
+                nombre: "Aniello 006 Malbec",
+                bodega: "Aniello",
+                tags: ["tinto", "pasta", "pizza", "equilibrado", "medio"],
+                cata: "Frutado y fresco de la Patagonia.",
+                link: "#",
+                tipo: "stock",
+                info: "Entrega inmediata"
+            },
+            {
+                nombre: "Alpassion Private",
+                bodega: "Alpassion",
+                tags: ["tinto", "asado", "intenso", "premium"],
+                cata: "Potencia y elegancia de Valle de Uco.",
+                link: "#",
+                tipo: "cupo",
+                faltan: 12,
+                info: "Reserva Grupal"
+            },
+            {
+                nombre: "Pielihueso Naranjo",
+                bodega: "Pielihueso",
+                tags: ["blanco", "picada", "suave", "medio"],
+                cata: "Vino natural, turbio y cítrico.",
+                link: "#",
+                tipo: "stock",
+                info: "Entrega inmediata"
+            }
+        ];
+
+        const STEPS = [
+            {
+                q: "¿Qué vas a comer?",
+                options: [
+                    { l: "🥩 Asado", v: "asado" },
+                    { l: "🍝 Pastas / Pizza", v: "pasta" },
+                    { l: "🧀 Picada", v: "picada" }
+                ]
+            },
+            {
+                q: "Tipo de vino",
+                options: [
+                    { l: "Tinto", v: "tinto" },
+                    { l: "Blanco / Rosado", v: "blanco" }
+                ]
+            },
+            {
+                q: "Intensidad",
+                options: [
+                    { l: "Suave / Fresco", v: "suave" },
+                    { l: "Equilibrado", v: "equilibrado" },
+                    { l: "Intenso / Con cuerpo", v: "intenso" }
+                ]
+            }
+        ];
+
+        let currentStep = 0;
+        let selectedTags = [];
+
+        function renderQuiz() {
+            const area = document.getElementById('quiz-area');
+            const dots = document.getElementById('dots-container');
+
+            if (currentStep < STEPS.length) {
+                const step = STEPS[currentStep];
+                area.innerHTML = `
+                <div class="quiz-step">
+                    <h2 class="question">${step.q}</h2>
+                    ${step.options.map(opt => `
+                        <button class="option-btn" onclick="next('${opt.v}')">${opt.l}</button>
+                    `).join('')}
+                </div>
+            `;
+                updateDots();
+            } else {
+                dots.classList.add('hidden');
+                renderResults();
+            }
+        }
+
+        function next(val) {
+            selectedTags.push(val);
+            currentStep++;
+            renderQuiz();
+        }
+
+        function updateDots() {
+            const d = document.querySelectorAll('.dot');
+            d.forEach((dot, idx) => {
+                dot.className = idx === currentStep ? 'dot active' : 'dot';
+            });
+        }
+
+        function renderResults() {
+            const area = document.getElementById('quiz-area');
+
+            // Algoritmo de recomendación simple
+            const matches = CATALOGO.filter(v => {
+                return v.tags.some(tag => selectedTags.includes(tag));
+            }).slice(0, 2);
+
+            area.innerHTML = `
+            <div class="quiz-step">
+                <h2 class="question">Tus elegidos:</h2>
+                ${matches.map(v => `
+                    <div class="result-card">
+                        <span class="badge ${v.tipo === 'stock' ? 'badge-stock' : 'badge-cupo'}">${v.info}</span>
+                        <div style="font-weight:600">${v.nombre}</div>
+                        <div style="font-size:0.8rem; color:#666">${v.bodega}</div>
+                        <p style="font-size:0.85rem; margin:8px 0 italic">"${v.cata}"</p>
+                        ${v.tipo === 'cupo' ? `
+                            <div style="font-size:0.7rem; color: #d35400">Faltan ${v.faltan} botellas para cerrar lote</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+                        ` : ''}
+                        <a href="${v.link}" class="btn-buy">${v.tipo === 'stock' ? 'Comprar' : 'Anotarme en la reserva'}</a>
+                    </div>
+                `).join('')}
+                <button class="option-btn" onclick="location.reload()" style="text-align:center; margin-top:10px">Reiniciar</button>
+            </div>
+        `;
+        }
+
+        renderQuiz();
+    </script>
+
+</body>
+
+</html>

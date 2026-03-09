@@ -1,0 +1,191 @@
+:root {
+    --primary: #5c142c; /* Borravino */
+    --accent: #d4af37;  /* Gold/Oak */
+    --bg: #faf9f6;      /* Off White / Paper */
+    --text: #2d2d2d;
+    --card-bg: #ffffff;
+    --radius: 12px;
+    --font-main: 'Outfit', sans-serif;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-main);
+    line-height: 1.6;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vinito-container {
+    width: 100%;
+    max-width: 450px;
+    height: 90vh;
+    max-height: 800px;
+    background: var(--card-bg);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Header */
+.vinito-header {
+    padding: 24px;
+    text-align: center;
+}
+
+.vinito-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.accent {
+    color: var(--primary);
+}
+
+.vinito-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Steps */
+.vinito-main {
+    flex: 1;
+    padding: 0 24px 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.vinito-step {
+    animation: fadeIn 0.4s ease-out;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Elements */
+.hero-img {
+    width: 100%;
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    object-fit: cover;
+    height: 250px;
+}
+
+.vinito-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.vinito-btn.primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.vinito-btn.primary:hover {
+    background-color: #430e1f;
+}
+
+.vinito-btn.option {
+    background-color: #f3f3f3;
+    color: var(--text);
+    text-align: left;
+    margin-bottom: 12px;
+    border: 2px solid transparent;
+}
+
+.vinito-btn.option.selected {
+    border-color: var(--primary);
+    background-color: #fff4f7;
+}
+
+.meta-text {
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 16px;
+    color: #999;
+}
+
+/* Result Cards */
+.result-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.result-header {
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.tag-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.tag-badge.fisico { background: #e6f7ed; color: #2ecc71; }
+.tag-badge.cupo { background: #fff8e1; color: #f39c12; }
+
+/* Custom Progress Bar */
+.vinito-footer {
+    padding: 12px 24px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.5s ease;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .vinito-container {
+        height: 100vh;
+        max-height: none;
+        border-radius: 0;
+    }
+}
