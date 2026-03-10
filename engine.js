@@ -77,7 +77,7 @@ function startQuiz() {
 function renderStep() {
     const quizFlow = document.getElementById('quiz-flow');
     const currentStepData = QUIZ_STEPS[state.step];
-    
+
     // Update Progress
     const progress = ((state.step) / QUIZ_STEPS.length) * 100;
     document.getElementById('progress-fill').style.width = `${progress}%`;
@@ -143,8 +143,8 @@ function calculateRecommendations() {
         // 4. Presupuesto
         if (vino.precio_rango === state.answers.presupuesto) score += 20;
 
-        // 5. Priorizar Stock sobre Cupo (Estrategia de Negocio)
-        if (vino.disponibilidad === 'fisico') score += 10;
+        // 5. Priorizar Stock (Estrategia de Negocio)
+        score += 10;
 
         return { ...vino, score };
     });
@@ -186,17 +186,8 @@ function renderVinoCard(vino) {
             <div class="result-body" style="padding: 16px;">
                 <p class="cata-text">"${vino.notas_cata}"</p>
                 
-                ${isCupo ? `
-                    <div class="cupo-info" style="margin: 15px 0;">
-                        <p style="font-size: 0.8rem; margin-bottom: 5px;"><strong>Faltan ${missing} botellas</strong> para pedir a bodega.</p>
-                        <div class="progress-bar" style="height: 4px;">
-                            <div class="progress-fill" style="width: ${percent}%; background: #f39c12;"></div>
-                        </div>
-                    </div>
-                ` : ''}
-
                 <a href="${vino.link}" class="vinito-btn primary" style="display: block; text-decoration: none; text-align: center; margin-top: 10px;">
-                    ${isCupo ? 'Unirme a la reserva' : 'Comprar ahora'}
+                    Comprar ahora
                 </a>
             </div>
         </div>
