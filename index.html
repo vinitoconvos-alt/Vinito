@@ -184,37 +184,16 @@
     </div>
 
     <script>
-        // --- CATALOGO (Fácil de editar para el usuario) ---
-        const CATALOGO = [
-            {
-                nombre: "Aniello 006 Malbec",
-                bodega: "Aniello",
-                tags: ["tinto", "pasta", "pizza", "equilibrado", "medio"],
-                cata: "Frutado y fresco de la Patagonia.",
-                link: "#",
-                tipo: "stock",
-                info: "Entrega inmediata"
-            },
-            {
-                nombre: "Alpassion Private",
-                bodega: "Alpassion",
-                tags: ["tinto", "asado", "intenso", "premium"],
-                cata: "Potencia y elegancia de Valle de Uco.",
-                link: "#",
-                tipo: "cupo",
-                faltan: 12,
-                info: "Reserva Grupal"
-            },
-            {
-                nombre: "Pielihueso Naranjo",
-                bodega: "Pielihueso",
-                tags: ["blanco", "picada", "suave", "medio"],
-                cata: "Vino natural, turbio y cítrico.",
-                link: "#",
-                tipo: "stock",
-                info: "Entrega inmediata"
-            }
-        ];
+        // El catálogo se carga dinámicamente desde catalogo.json
+        let CATALOGO = [];
+
+        fetch('catalogo.json')
+            .then(res => res.json())
+            .then(data => {
+                CATALOGO = data;
+                console.log("Catálogo cargado:", CATALOGO.length, "vinos");
+            })
+            .catch(err => console.error("Error cargando catálogo:", err));
 
         const STEPS = [
             {
@@ -296,7 +275,7 @@
                         <div style="font-weight:600">${v.nombre}</div>
                         <div style="font-size:0.8rem; color:#666">${v.bodega}</div>
                         <p style="font-size:0.85rem; margin:8px 0 italic">"${v.cata}"</p>
-                        <a href="${v.link}" class="btn-buy">Comprar ahora</a>
+                        <a href="${v.link}" target="_blank" class="btn-buy">Comprar ahora</a>
                     </div>
                 `).join('')}
                 <button class="option-btn" onclick="location.reload()" style="text-align:center; margin-top:10px">Reiniciar</button>
